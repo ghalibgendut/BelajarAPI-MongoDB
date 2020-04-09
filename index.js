@@ -30,11 +30,42 @@ MongoClient.connect(URL, {useNewUrlParser : true, useUnifiedTopology: true}, (er
         )
     })
     
-    // app.post('/user', (req, res)=>{
-    //     res.send(
-    //         req.body
-    //     )
-    // })
+    app.post('/user', (req, res)=>{
+        const {name, age} = req.body
+
+        // Cara insert ke databse dengan API
+        db.collection('user').insertOne({name, age})
+            .then((respon)=>{
+                res.send({
+                    idNewUser : respon.insertedId,
+                    dataUser : respon.ops[0]
+                })
+            })
+    })
+
+    // Get Data berdasarkan nama
+    app.get('/user', (req, res)=>{
+        var {name} = req.query
+
+        db.collection('user').find({name :name }).toArray()
+            .then((respon)=>{
+                res.send({
+                    respon
+                })
+
+                // Customized Response
+                // if (respon.length == 0) {
+                //     res.send ({
+                //         errorMassage : "user Tidak ditemukan"
+                //     })
+                // }
+                // else {
+                //     res.send({
+                //         respon
+                //     })
+                // }
+            })
+    })
     
     
     
